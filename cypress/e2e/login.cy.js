@@ -26,7 +26,7 @@ describe('Login Test', () => {
   
   })
   
-   it.only('TC-login-006-should fail login withlowercase Username ', () => {
+   it('TC-login-006-should fail login withUppercase Username ', () => {
     cy.loginWithlowercaseUsername("ADMIN")
   
   })
