@@ -28,8 +28,20 @@ Cypress.Commands.add('forgot', () => {
 })
 
 
-// cypress.Commands.add('loginWithoutUsername', (password) => {
-//   const loginPage = new LoginPage()
-//   cy.visit(Cypress.config('baseUrl'))
-//   loginPage.loginwithoutUsername(password)
-// })
+Cypress.Commands.add('loginWithoutUsername', () => {
+  const loginPage = new LoginPage()
+  cy.visit(Cypress.config('baseUrl'))
+  loginPage.loginWithoutUsername("password")
+})
+
+Cypress.Commands.add('loginWithoutPassword', () => {
+  const loginPage = new LoginPage()
+  cy.visit(Cypress.config('baseUrl'))
+  loginPage.loginWithoutPass("Username")
+})
+
+Cypress.Commands.add('loginWithlowercaseUsername', (username) => {
+  const loginPage = new LoginPage()
+  cy.visit(Cypress.config('baseUrl'))
+  loginPage.loginWithlowercaseUsername(username, Cypress.env('password'))
+})
