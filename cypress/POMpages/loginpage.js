@@ -28,21 +28,28 @@ export class LoginPage {
     cy.get(this.passwordlocator).clear().type(password).should('have.value', password)
     cy.get(this.loginlocator).click()
   }
-  loginWithoutPass(Username){
+  loginWithoutPass(Username) {
     cy.get(this.userNamelocator).clear().type(Username).should('have.value', Username)
     cy.get(this.loginlocator).click()
   }
-  loginWithlowercaseUsername(username, password){
+  loginWithlowercaseUsername(username, password) {
     cy.get(this.userNamelocator).clear().type(username).should('have.value', username)
-    cy.get(this.passwordlocator).clear().type(password).should("have.value",password)
+    cy.get(this.passwordlocator).clear().type(password).should("have.value", password)
     cy.get(this.loginlocator).click()
 
-   
-    if (cy.get(this.pageTitle === 'Dashboard') ){
-      cy.log('Bug found: Login succeeded with lowercase username')
-    } else {
-      cy.log('Login failed as expected (case-sensitive username)')
-    }
-
-}
+    // Check if login succeeded (Dashboard page appears) - this would be a bug
+    cy.get('body').then(($body) => {
+      if ($body.find(this.pageTitle).length > 0) {
+        cy.get(this.pageTitle).then(($title) => {
+          if ($title.text().includes('Dashboard')) {
+            cy.log('Bug found: Login succeeded with lowercase username')
+          } else {
+            cy.log('Login failed as expected (case-sensitive username)')
+          }
+        })
+      } else {
+        cy.log('Login failed as expected (case-sensitive username)')
+      }
+    })
+  }
 }
