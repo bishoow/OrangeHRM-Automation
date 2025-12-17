@@ -17,10 +17,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22   # upgraded for compatibility with Cypress 14 & reporters
 
       - name: Install dependencies
         run: npm ci
+
+      # 👇 Create .env file from your GitHub secret (named Env)
+      - name: Create .env file from GitHub secret
+        run: echo "${{ secrets.Env }}" > .env
+
+      # 👇 Optional: debug (safe) to verify env loaded properly
+      - name: Verify .env file (no secrets printed)
+        run: grep -E 'CYPRESS_|^#' .env || true
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
@@ -31,9 +39,7 @@ jobs:
           parallel: true
           group: "GitHub Action Tests"
         env:
-          CYPRESS_baseUrl: ${{ secrets.CYPRESS_BASEURL }}
-          CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
-          CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
+          DOTENV_CONFIG_PATH: .env   # let Cypress read your .env variables
 
       # Upload screenshots if tests fail
       - name: Upload screenshots
@@ -51,7 +57,7 @@ jobs:
           name: cypress-videos
           path: cypress/videos
 
-      # Upload Cypress report (JUnit or HTML)
+      # Upload Mochawesome/HTML reports
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
